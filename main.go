@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -28,7 +27,7 @@ const version = "v1.0"
 
 func main() {
 
-	//check show the manual if there is no arguments provided 
+	//check show the manual if there is no arguments provided
 	if len(os.Args) < 2 {
 		fmt.Printf(`
 			Usage: task-tracker <command> [arguments]
@@ -49,8 +48,6 @@ func main() {
 		return
 	}
 
-	
-
 	tasks, err := LoadTasks()
 
 	if err != nil {
@@ -62,8 +59,8 @@ func main() {
 		{
 			fmt.Println("All tasks:")
 
-			for index, task := range tasks {
-				fmt.Printf("%v-%v (%v) \n", index, task.Description, task.Status)
+			for _, task := range tasks {
+				fmt.Printf("%v-%v (%v) \n", task.ID, task.Description, task.Status)
 			}
 		}
 	case "add":
@@ -73,22 +70,11 @@ func main() {
 				return
 			}
 
-			content := os.Args[2]
-
-			newTask := Task{
-				ID:          len(tasks) + 1,
-				Description: content,
-				Status:      StatusToDo,
-				CreatedAt:   time.Now().Local(),
-				UpdatedAt:   time.Now().Local(),
-			}
-
-			tasks = append(tasks, newTask)
-
-			err = SaveTasks(tasks)
+			err := AddTask(&tasks, os.Args[2])
 
 			if err != nil {
 				fmt.Printf("error saving tasks :%v", err)
+				return
 			}
 
 			fmt.Println("Task Saved!")
@@ -100,27 +86,31 @@ func main() {
 				return
 			}
 
-			idStr,description := os.Args[2],os.Args[3]
-
-			id, err := strconv.Atoi(idStr)
-
-			if err != nil {
-				fmt.Println("Error: Invalid task ID")
-				return
-			}
-
-			task := tasks[id]
-			task.Description =description
-			task.UpdatedAt= time.Now().Local()
-
-			tasks[id]= task
-			err = SaveTasks(tasks)
+			err := UpdateTask(&tasks, os.Args[2], os.Args[3])
 
 			if err != nil {
 				fmt.Printf("error saving tasks :%v", err)
+				return
 			}
 
 			fmt.Println("Task Updated!")
+
+		}
+	case "delete":
+		{
+			if len(os.Args) < 3 {
+				fmt.Println("Error: Please provide the task id ")
+				return
+			}
+
+			err := DeleteTask(&tasks, os.Args[2])
+
+			if err != nil {
+				fmt.Printf("error Deleting task :%v", err)
+				return
+			}
+
+			fmt.Println("Task deleted!")
 
 		}
 	case "version":
@@ -149,4 +139,3 @@ func main() {
 	}
 
 }
-
