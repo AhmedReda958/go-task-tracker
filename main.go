@@ -25,6 +25,8 @@ type Task struct {
 const taskFile = "tasks.json"
 const version = "v1.0"
 
+// ...existing code...
+
 func main() {
 
 	//check show the manual if there is no arguments provided
@@ -51,72 +53,22 @@ func main() {
 	tasks, err := LoadTasks()
 
 	if err != nil {
- 		fmt.Printf("main error: failed to load tasks: %v\n", err)
+		fmt.Printf("main error: failed to load tasks: %v\n", err)
 	}
 
 	switch os.Args[1] {
 	case "list":
-		{
-			fmt.Println("All tasks:")
-
-			for _, task := range tasks {
-				fmt.Printf("%v-%v (%v) \n", task.ID, task.Description, task.Status)
-			}
-		}
+		handleList(tasks)
 	case "add":
-		{
-			if len(os.Args) < 3 {
-				fmt.Println("Error: Please provide a task description")
-				return
-			}
-
- 			err := AddTask(&tasks, os.Args[2])
-
- 			if err != nil {
- 				fmt.Printf("main error: failed to save new task: %v\n", err)
- 				return
- 			}
-
-			fmt.Println("Task Saved!")
-		}
+		handleAdd(&tasks, os.Args[2:])
 	case "update":
-		{
-			if len(os.Args) < 4 {
-				fmt.Println("Error: Please provide the task id and description")
-				return
-			}
-
- 			err := UpdateTask(&tasks, os.Args[2], os.Args[3])
-
- 			if err != nil {
- 				fmt.Printf("main error: failed to update task: %v\n", err)
- 				return
- 			}
-
-			fmt.Println("Task Updated!")
-
-		}
+		handleUpdate(&tasks, os.Args[2:])
 	case "delete":
-		{
-			if len(os.Args) < 3 {
-				fmt.Println("Error: Please provide the task id ")
-				return
-			}
-
- 			err := DeleteTask(&tasks, os.Args[2])
-
- 			if err != nil {
- 				fmt.Printf("main error: failed to delete task: %v\n", err)
- 				return
- 			}
-
-			fmt.Println("Task deleted!")
-
-		}
+		handleDelete(&tasks, os.Args[2:])
 	case "version":
-		{
-			fmt.Println(version)
-		}
+		fmt.Println(version)
 	}
 
 }
+
+
