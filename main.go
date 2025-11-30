@@ -25,13 +25,8 @@ type Task struct {
 const taskFile = "tasks.json"
 const version = "v1.0"
 
-// ...existing code...
-
-func main() {
-
-	//check show the manual if there is no arguments provided
-	if len(os.Args) < 2 {
-		fmt.Printf(`
+func printHelpManual() {
+	fmt.Printf(`
 			Usage: task-tracker <command> [arguments]
 
 			Commands:
@@ -47,6 +42,13 @@ func main() {
 				task-tracker list
 				task-tracker list todo
 		`)
+}
+
+func main() {
+
+	//check show the manual if there is no arguments provided
+	if len(os.Args) < 2 {
+		printHelpManual()
 		return
 	}
 
@@ -67,8 +69,9 @@ func main() {
 		handleDelete(&tasks, os.Args[2:])
 	case "version":
 		fmt.Println(version)
+	default:
+		printHelpManual()
+
 	}
 
 }
-
-
