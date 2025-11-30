@@ -2,9 +2,39 @@ package main
 
 import "fmt"
 
-func handleList(tasks []Task) {
-	fmt.Println("All tasks:")
-	for _, task := range tasks {
+func handleList(tasks []Task, args []string) {
+	var filteredTasks []Task
+	var statusFilter TaskStatus
+	var hasFilter bool
+
+	if len(args) > 0 {
+		parsedStatus, ok := parseTaskStatus(args[0])
+		if !ok {
+			fmt.Printf("Error: Invalid status '%s'. Valid statuses are: todo, in-progress, done\n", args[0])
+			return
+		}
+		statusFilter = parsedStatus
+		hasFilter = true
+	}
+
+	if hasFilter {
+		for _, task := range tasks {
+			if task.Status == statusFilter {
+				filteredTasks = append(filteredTasks, task)
+			}
+		}
+		fmt.Printf("Tasks with status '%s':\n", statusFilter)
+	} else {
+		filteredTasks = tasks
+		fmt.Println("All tasks:")
+	}
+
+	if len(filteredTasks) == 0 {
+		fmt.Println("No tasks found.")
+		return
+	}
+
+	for _, task := range filteredTasks {
 		fmt.Printf("%v-%v (%v) \n", task.ID, task.Description, task.Status)
 	}
 }

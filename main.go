@@ -30,17 +30,22 @@ func printHelpManual() {
 			Usage: task-tracker <command> [arguments]
 
 			Commands:
-				add <description>    Add a new task
-				update <id> <status> Update task status (todo, in-progress, done)
-				delete <id>          Delete a task
-				list [status]        List all tasks or filter by status
-
+				add <description>              Add a new task
+				update <id> <description>      Update task description
+				delete <id>                    Delete a task
+				mark <id> <status>             Update task status
+				list [status]                  List all tasks or filter by status
+			
 			Examples:
 				task-tracker add "Buy groceries"
-				task-tracker update 1 done
-				task-tracker delete 1 
+				task-tracker update 1 "Buy milk and bread"
+				task-tracker delete 1
+				task-tracker mark 1 in-progress
+				task-tracker mark 2 done
 				task-tracker list
 				task-tracker list todo
+				task-tracker list done
+				task-tracker list in-progress
 		`)
 }
 
@@ -60,7 +65,7 @@ func main() {
 
 	switch os.Args[1] {
 	case "list":
-		handleList(tasks)
+		handleList(tasks, os.Args[2:])
 	case "add":
 		handleAdd(&tasks, os.Args[2:])
 	case "update":
