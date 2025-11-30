@@ -47,3 +47,16 @@ func handleDelete(tasks *[]Task, args []string) {
 	}
 	fmt.Println("Task deleted!")
 }
+
+func handleStatusUpdate(tasks *[]Task, args []string) {
+	if len(args) < 2 {
+		fmt.Println("Error: Please provide the task id and status")
+		return
+	}
+	err := UpdateTaskSatus(tasks, args[0], args[1])
+	if err != nil {
+		fmt.Printf("main error: failed to update task: %v\n", err)
+		return
+	}
+	fmt.Println("Task Updated!")
+}

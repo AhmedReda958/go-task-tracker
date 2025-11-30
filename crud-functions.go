@@ -46,6 +46,20 @@ func AddTask(tasks *[]Task, content string) error {
 	return err
 }
 
+// parseTaskStatus converts a string to a TaskStatus if valid
+func parseTaskStatus(s string) (TaskStatus, bool) {
+	switch s {
+	case string(StatusToDo):
+		return StatusToDo, true
+	case string(StatusInProgress):
+		return StatusInProgress, true
+	case string(StatusDone):
+		return StatusDone, true
+	default:
+		return TaskStatus(""), false
+	}
+}
+
 func UpdateTask(tasks *[]Task, taskId string, description string) error {
 
 	id, err := strconv.Atoi(taskId)
@@ -86,6 +100,38 @@ func DeleteTask(tasks *[]Task, taskId string) error {
 	}
 
 	*tasks = append((*tasks)[:taskIndex], (*tasks)[taskIndex+1:]...)
+
+	err = SaveTasks(*tasks)
+
+	return err
+}
+
+func UpdateTaskSatus(tasks *[]Task, taskId string, status string) error {
+	
+	id, err := strconv.Atoi(taskId)
+
+	if err != nil {
+		return fmt.Errorf("UpdateTask error: invalid task id '%s': %v", taskId, err)
+
+	}
+
+	parsedStatus, ok := parseTaskStatus(status)
+	if !ok {
+		return fmt.Errorf("UpdateTask error: invalid status '%s'", status)
+	}
+
+	taskIndex := findTask(*tasks, id)
+	if taskIndex == -1 {
+		return fmt.Errorf("UpdateTask error: task with ID %d not found", id)
+
+	}
+	
+
+	task := (*tasks)[taskIndex]
+	task.Status = parsedStatus
+	task.UpdatedAt = time.Now().Local()
+
+	(*tasks)[taskIndex] = task
 
 	err = SaveTasks(*tasks)
 

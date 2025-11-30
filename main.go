@@ -67,6 +67,8 @@ func main() {
 		handleUpdate(&tasks, os.Args[2:])
 	case "delete":
 		handleDelete(&tasks, os.Args[2:])
+	case "mark":
+		handleStatusUpdate(&tasks,os.Args[2:])
 	case "version":
 		fmt.Println(version)
 	default:
