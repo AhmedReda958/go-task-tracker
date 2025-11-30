@@ -51,7 +51,7 @@ func main() {
 	tasks, err := LoadTasks()
 
 	if err != nil {
-		fmt.Printf("error loading tasks :%v", err)
+ 		fmt.Printf("main error: failed to load tasks: %v\n", err)
 	}
 
 	switch os.Args[1] {
@@ -70,12 +70,12 @@ func main() {
 				return
 			}
 
-			err := AddTask(&tasks, os.Args[2])
+ 			err := AddTask(&tasks, os.Args[2])
 
-			if err != nil {
-				fmt.Printf("error saving tasks :%v", err)
-				return
-			}
+ 			if err != nil {
+ 				fmt.Printf("main error: failed to save new task: %v\n", err)
+ 				return
+ 			}
 
 			fmt.Println("Task Saved!")
 		}
@@ -86,12 +86,12 @@ func main() {
 				return
 			}
 
-			err := UpdateTask(&tasks, os.Args[2], os.Args[3])
+ 			err := UpdateTask(&tasks, os.Args[2], os.Args[3])
 
-			if err != nil {
-				fmt.Printf("error saving tasks :%v", err)
-				return
-			}
+ 			if err != nil {
+ 				fmt.Printf("main error: failed to update task: %v\n", err)
+ 				return
+ 			}
 
 			fmt.Println("Task Updated!")
 
@@ -103,12 +103,12 @@ func main() {
 				return
 			}
 
-			err := DeleteTask(&tasks, os.Args[2])
+ 			err := DeleteTask(&tasks, os.Args[2])
 
-			if err != nil {
-				fmt.Printf("error Deleting task :%v", err)
-				return
-			}
+ 			if err != nil {
+ 				fmt.Printf("main error: failed to delete task: %v\n", err)
+ 				return
+ 			}
 
 			fmt.Println("Task deleted!")
 
@@ -116,25 +116,6 @@ func main() {
 	case "version":
 		{
 			fmt.Println(version)
-		}
-	default:
-		{
-			fmt.Printf(`
-			Usage: task-tracker <command> [arguments]
-
-			Commands:
-				add <description>    Add a new task
-				update <id> <status> Update task status (todo, in-progress, done)
-				delete <id>          Delete a task
-				list [status]        List all tasks or filter by status
-
-			Examples:
-				task-tracker add "Buy groceries"
-				task-tracker update 1 done
-				task-tracker delete 1 done
-				task-tracker list
-				task-tracker list todo
-		`)
 		}
 	}
 
