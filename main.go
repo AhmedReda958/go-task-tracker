@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"strconv"
@@ -52,7 +51,7 @@ func main() {
 
 	
 
-	tasks, err := loadTasks()
+	tasks, err := LoadTasks()
 
 	if err != nil {
 		fmt.Printf("error loading tasks :%v", err)
@@ -86,7 +85,7 @@ func main() {
 
 			tasks = append(tasks, newTask)
 
-			err = saveTasks(tasks)
+			err = SaveTasks(tasks)
 
 			if err != nil {
 				fmt.Printf("error saving tasks :%v", err)
@@ -115,7 +114,7 @@ func main() {
 			task.UpdatedAt= time.Now().Local()
 
 			tasks[id]= task
-			err = saveTasks(tasks)
+			err = SaveTasks(tasks)
 
 			if err != nil {
 				fmt.Printf("error saving tasks :%v", err)
@@ -151,41 +150,3 @@ func main() {
 
 }
 
-func saveTasks(tasks []Task) error {
-
-	data, err := json.MarshalIndent(tasks, "", " ")
-
-	if err != nil {
-		return fmt.Errorf("error marsharling JSON: %v", err)
-	}
-
-	err = os.WriteFile(taskFile, data, 0644)
-
-	if err != nil {
-		return fmt.Errorf("error writing files: %v", err)
-	}
-	return nil
-
-}
-
-func loadTasks() ([]Task, error) {
-
-	data, err := os.ReadFile(taskFile)
-
-	if os.IsNotExist(err) {
-		return []Task{}, nil
-	}
-
-	if err != nil {
-		return nil, fmt.Errorf("error reading file: %v", err)
-	}
-
-	var tasks []Task
-
-	if err := json.Unmarshal(data, &tasks); err != nil {
-		return nil, fmt.Errorf("error unmarshalling JSON: %v", err)
-
-	}
-
-	return tasks, nil
-}
